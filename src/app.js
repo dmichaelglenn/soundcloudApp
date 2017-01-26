@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import ProgressSoundPlayer from './components/ProgressSoundPlayer';
 import SC from 'node-soundcloud';
 import Loading from 'react-loading';
-import autobind from 'autobind-decorator';
+// import autobind from 'autobind-decorator';
 
 var client_id = 'APP ID WILL GO HERE WHEN I GET IT';
 
@@ -11,7 +11,7 @@ SC.init({
     id: client_id
 });
 
-@autobind
+// @autobind
 class Main extends Component {
     constructor(props){
         super();
@@ -60,11 +60,19 @@ class Main extends Component {
     renderSearchResults() {
         return (
             <div id="search-results">
-                {this.state.searchResults.map(this.renderPlayer)}
+                {this.state.searchResults.map(this.renderPlayer.bind(this))}
             </div>
         );
     }
 
+    renderPlayer(track) {
+        return (
+            <ProgressSoundPlayer
+                key={track.id}
+                clientId={client_id}
+                resolveUrl={track.permalink_url} />
+        );
+    }
 
 
     render() {
@@ -72,18 +80,20 @@ class Main extends Component {
             <div>
                 <h1>Soundcloud Desktop Player</h1>
                 <input type="search"
-                    onKeyUp={this.handleTextChange}
+                    onKeyUp={this.handleTextChange.bind(this)}
                     className='search-field'
                     placeholder="Enter song/artist to search" />
                 <button className="search-button"
-                    onClick={this.search}>Search</button>
+                    onClick={this.search.bind(this)}>Search</button>
                 <div className="center">
                     {this.state.isLoading && <Loading type="bars" color="#FFBB935" />}
                 </div>
                 {this.state.hasResults && !this.state.isLoading ?
-                  this.renderSearchResults :
-                 this.renderNoSearchResults}
+                  this.renderSearchResults.call(this) :
+                 this.renderNoSearchResults.call(this)}
             </div>
         );
     }
 }
+
+ReactDOM.render(<Main />, document.getElementById('main'));
