@@ -23,6 +23,7 @@ class Main extends Component {
             isLoading: false
         }
     }
+
     handleTextChange(event) {
         this.setState({
             query: event.target.value
@@ -50,6 +51,22 @@ class Main extends Component {
         });
     }
 
+    renderNoSearchResults() {
+        return (
+            <div id="no-results"></div>
+        );
+    }
+
+    renderSearchResults() {
+        return (
+            <div id="search-results">
+                {this.state.searchResults.map(this.renderPlayer)}
+            </div>
+        );
+    }
+
+
+
     render() {
         return (
             <div>
@@ -64,8 +81,8 @@ class Main extends Component {
                     {this.state.isLoading && <Loading type="bars" color="#FFBB935" />}
                 </div>
                 {this.state.hasResults && !this.state.isLoading ?
-                  this.renderSearchResults() :
-                 this.renderNoSearchResults()}
+                  this.renderSearchResults :
+                 this.renderNoSearchResults}
             </div>
         );
     }
